@@ -1,0 +1,188 @@
+{
+  "common": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "theme": "Theme",
+    "language": "Language",
+    "play": "Play",
+    "pause": "Pause",
+    "edit": "Edit",
+    "delete": "Delete",
+    "actions": "Actions",
+    "usd": "USD"
+  },
+  "nav": {
+    "home": "Home",
+    "explore": "Explore Dashboard",
+    "studio": "AI Remix Studio",
+    "wallet": "Wallet & Analytics",
+    "upload": "Upload Music",
+    "voices": "AI Voice Library",
+    "settings": "Profile Settings",
+    "admin": "Admin Panel",
+    "collab": "Realtime Collab",
+    "battles": "Remix Battles",
+    "notifications": "Notifications"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to access your studio",
+      "email_placeholder": "name@example.com",
+      "password_placeholder": "Enter your password",
+      "forgot_password": "Forgot password?",
+      "submit_btn": "Sign In",
+      "oauth_divider": "or continue with",
+      "signup_link": "Don't have an account? Sign up"
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Join the next generation of music ownership",
+      "role_section": "Select your primary role",
+      "role_creator": "Original Creator",
+      "role_creator_desc": "For producers, singers & composers",
+      "role_remixer": "AI Remixer",
+      "role_remixer_desc": "For generating derivative tracks",
+      "role_fan": "Listener / Fan",
+      "role_fan_desc": "For discovering & licensing music",
+      "username_placeholder": "@username",
+      "email_placeholder": "Email address",
+      "password_placeholder": "Password",
+      "agree_terms": "I agree to the Terms of Service and DRM Licensing Agreement",
+      "submit_btn": "Create Account",
+      "login_link": "Already have an account? Sign in"
+    }
+  },
+  "explore": {
+    "hero_title": "The GitHub + Spotify for Music Creators",
+    "search_placeholder": "Remix 'Summer Breeze' into dark phonk...",
+    "remix_btn": "Remix",
+    "trending_section": "Trending Original Tracks",
+    "trending_subtitle": "Open for AI remixing & licensing",
+    "badges": {
+      "bpm": "BPM",
+      "key": "Key",
+      "stems": "Stems"
+    }
+  },
+  "song_details": {
+    "cta_remix": "Open in AI Remix Studio",
+    "stems_control": "Stems Control",
+    "stems_subtitle": "AI Demucs separated tracks",
+    "vocals": "Vocals",
+    "drums": "Drums",
+    "bass": "Bass",
+    "melody": "Melody",
+    "mute": "Mute",
+    "solo": "Solo",
+    "licensing_options": "Licensing & Buying Options",
+    "license_personal": "Personal License",
+    "license_commercial": "Commercial License",
+    "license_remix": "Remix License",
+    "license_exclusive": "Exclusive License"
+  },
+  "studio": {
+    "prompt_title": "1. Text Prompt Description",
+    "prompt_placeholder": "Make the drums faster, add deep bass distortion, synth arp overlays...",
+    "presets_title": "2. Choose Style Preset",
+    "presets": {
+      "lofi": "Lofi",
+      "phonk": "Phonk",
+      "synthwave": "Synthwave",
+      "techno": "Techno",
+      "ambient": "Ambient",
+      "anime": "Anime"
+    },
+    "generate_btn": "GENERATE AI REMIX",
+    "logs_title": "AI Execution Status Logs",
+    "royalty_title": "Royalty Split Invariants",
+    "royalty_desc": "Immutable copyright split configurations:",
+    "royalty_creator": "Original Creator",
+    "royalty_remixer": "Remixer (You)",
+    "royalty_platform": "Platform Fee",
+    "royalty_disclaimer": "All generated remixes are bound to the original creator's royalty split invariants. Derivative works cannot be sold without active licensing."
+  },
+  "wallet": {
+    "total_balance": "Total Balance",
+    "total_streams": "Total Streams",
+    "active_remixes": "Active Remixes",
+    "withdraw_btn": "Withdraw Payout",
+    "splits_activity": "Royalty Splits Activity",
+    "date": "Date",
+    "source_track": "Source Track",
+    "remix_track": "Remix Track",
+    "event_type": "Event Type",
+    "gross": "Gross Amount",
+    "net": "Net Payout",
+    "graph_title": "Lineage & Royalty Splits Graph"
+  },
+  "upload": {
+    "title": "Upload Song & Stems",
+    "drag_drop_full": "Upload Full Track (.wav, .mp3, max 50MB)",
+    "stems_upload": "Stems Upload (Optional)",
+    "metadata_title": "Metadata & Rights Setup",
+    "song_title": "Song Title",
+    "genre": "Genre",
+    "bpm": "BPM",
+    "key": "Musical Key",
+    "mood": "Mood / Tags",
+    "allow_remix": "Allow AI Remixing",
+    "allow_commercial": "Allow Commercial Licensing",
+    "allow_voice": "Allow AI Voice Cloning",
+    "remixer_split": "Remixer Split",
+    "publish_btn": "Publish Song"
+  },
+  "checkout": {
+    "title": "Licensing Checkout",
+    "pay_now": "Pay Now",
+    "method": "Payment Method",
+    "stripe": "Credit Card / Stripe",
+    "momo": "MoMo E-Wallet",
+    "vnpay": "VNPay Portal"
+  },
+  "voices": {
+    "title": "AI Voice Library",
+    "subtitle": "Browse and license authenticated AI voice models or train your own.",
+    "train_btn": "+ Train My Voice",
+    "cards": {
+      "use": "Use in Studio",
+      "license": "License Voice",
+      "preview": "Vocal Preview"
+    },
+    "panel": {
+      "title": "Train My Voice Model",
+      "step_1": "1. Upload 10-min clean vocal samples (.wav)",
+      "step_2": "2. Set Licensing Model & Pricing",
+      "drag_vocal": "Drag & drop vocal recording files here",
+      "voice_name": "Voice Model Name"
+    }
+  },
+  "disputes": {
+    "title": "Copyright Dispute Mediator",
+    "case_id": "Dispute Case",
+    "status": {
+      "pending": "Pending Investigation",
+      "resolved": "Resolved",
+      "takedown": "Takedown Issued"
+    },
+    "actions": {
+      "reject": "Reject Claim",
+      "takedown": "Issue Takedown",
+      "adjust": "Adjust Royalty Split"
+    },
+    "analyzer": "AI Melodic Similarity Analyzer",
+    "match": "AI Match Confirmed"
+  },
+  "pricing": {
+    "title": "Choose Your Creative Power",
+    "subtitle": "Upgrade to unlock advanced AI remix credits, lossless audio stems, and private voice cloning models.",
+    "monthly": "Billed Monthly",
+    "yearly": "Billed Yearly (Save 20%)",
+    "free_trial": "Start 7-Day Free Trial",
+    "contact_sales": "Contact Sales"
+  }
+}

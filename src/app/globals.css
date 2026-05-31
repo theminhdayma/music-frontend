@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@source "./";
+
+/* ------------------------------------------------------------------------------
+   1. COLOR PALETTES CONFIGURATION (Light & Dark Themes)
+   ------------------------------------------------------------------------------ */
+
+:root {
+  /* LIGHT MODE (Clean Slate Mode) */
+  --background: #f9fafb;       /* Gray 50 */
+  --foreground: #111827;       /* Gray 900 */
+  --on-background: #111827;
+  
+  --surface: #ffffff;          /* Pure White */
+  --on-surface: #111827;
+  --surface-border: #e5e7eb;   /* Gray 200 */
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f9fafb;
+  --surface-container: #f3f4f6;
+  --surface-container-high: #e5e7eb;
+  --surface-container-highest: #d1d5db;
+  --surface-variant: #e5e7eb;
+  --on-surface-variant: #4b5563;
+  --surface-bright: #ffffff;
+  --outline-variant: #d1d5db;
+  
+  --primary: #6d3bd7;          /* Classic Deep Purple */
+  --on-primary: #ffffff;
+  --primary-hover: #5516be;
+  --primary-container: #e9ddff;
+  --on-primary-container: #23005c;
+  
+  --secondary: #00a572;        /* Vibrant Emerald Green */
+  --secondary-hover: #00875c;
+  --secondary-container: #6ffbbe;
+  --on-secondary-container: #00311f;
+  
+  --text-primary: #111827;     /* Gray 900 */
+  --text-secondary: #4b5563;   /* Gray 600 */
+  --text-muted: #9ca3af;       /* Gray 400 */
+  
+  --error: #ba1a1a;            /* Red */
+  --on-error: #ffffff;
+  --error-bg: #fee2e2;         
+  --error-container: #ffdad6;
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(229, 231, 235, 0.5);
+}
+
+.dark {
+  /* DARK MODE (Stitch UI High-Tech Audio Infrastructure) */
+  --background: #15121b;       
+  --foreground: #e7e0ed;       
+  --on-background: #e7e0ed;
+  
+  --surface: #15121b;          
+  --on-surface: #e7e0ed;
+  --surface-border: #2d3748;   
+  --surface-container-lowest: #0f0d15;
+  --surface-container-low: #1d1a23;
+  --surface-container: #211e27;
+  --surface-container-high: #2c2832;
+  --surface-container-highest: #37333d;
+  --surface-variant: #37333d;
+  --on-surface-variant: #cbc3d7;
+  --surface-bright: #3b3742;
+  --outline-variant: #494454;
+  
+  --primary: #d0bcff;          
+  --on-primary: #3c0091;
+  --primary-hover: #a078ff;
+  --primary-container: #a078ff;
+  --on-primary-container: #340080;
+  
+  --secondary: #4edea3;        
+  --secondary-hover: #00a572;
+  --secondary-container: #00a572;
+  --on-secondary-container: #00311f;
+  
+  --text-primary: #e7e0ed;     
+  --text-secondary: #cbc3d7;   
+  --text-muted: #958ea0;       
+  
+  --error: #ffb4ab;            
+  --on-error: #690005;
+  --error-bg: #93000a;         
+  --error-container: #93000a;
+  
+  --glass-bg: rgba(31, 41, 55, 0.6);
+  --glass-border: rgba(45, 55, 72, 0.5);
+}
+
+/* ------------------------------------------------------------------------------
+   2. TAILWIND v4 THEME DIRECTIVES
+   ------------------------------------------------------------------------------ */
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-on-background: var(--on-background);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-surface-border: var(--surface-border);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-surface-bright: var(--surface-bright);
+  --color-outline-variant: var(--outline-variant);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-bg: var(--error-bg);
+  --color-error-container: var(--error-container);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+}
+
+/* ------------------------------------------------------------------------------
+   3. GLOBAL ELEMENT BASE STYLES
+   ------------------------------------------------------------------------------ */
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Hanken Grotesk', sans-serif;
+}
+
+/* Smooth transitions for all elements affected by dark/light toggles */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

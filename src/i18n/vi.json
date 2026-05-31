@@ -1,0 +1,188 @@
+{
+  "common": {
+    "save": "Lưu Thay Đổi",
+    "cancel": "Hủy",
+    "submit": "Gửi",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "theme": "Giao diện",
+    "language": "Ngôn ngữ",
+    "play": "Phát",
+    "pause": "Tạm dừng",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "actions": "Hành động",
+    "usd": "USD"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "explore": "Khám phá",
+    "studio": "AI Remix Studio",
+    "wallet": "Ví & Phân tích",
+    "upload": "Tải nhạc lên",
+    "voices": "Thư viện Giọng ca AI",
+    "settings": "Cài đặt cá nhân",
+    "admin": "Bảng quản trị",
+    "collab": "Cộng tác trực tuyến",
+    "battles": "Cuộc thi Remix",
+    "notifications": "Thông báo"
+  },
+  "auth": {
+    "login": {
+      "title": "Chào mừng quay lại",
+      "subtitle": "Đăng nhập để vào phòng thu của bạn",
+      "email_placeholder": "name@example.com",
+      "password_placeholder": "Nhập mật khẩu",
+      "forgot_password": "Quên mật khẩu?",
+      "submit_btn": "Đăng Nhập",
+      "oauth_divider": "hoặc tiếp tục bằng",
+      "signup_link": "Chưa có tài khoản? Đăng ký ngay"
+    },
+    "signup": {
+      "title": "Tạo tài khoản mới",
+      "subtitle": "Tham gia thế hệ sở hữu âm nhạc tiếp theo",
+      "role_section": "Chọn vai trò chính của bạn",
+      "role_creator": "Creator (Nhạc sĩ gốc)",
+      "role_creator_desc": "Dành cho nhà sản xuất, ca sĩ & nhạc sĩ sáng tác",
+      "role_remixer": "AI Remixer (Người phối nhạc)",
+      "role_remixer_desc": "Dành cho người tạo các bản remix phái sinh",
+      "role_fan": "Listener / Fan (Thính giả)",
+      "role_fan_desc": "Dành cho người nghe & mua bản quyền nhạc",
+      "username_placeholder": "@username",
+      "email_placeholder": "Địa chỉ email",
+      "password_placeholder": "Mật khẩu",
+      "agree_terms": "Tôi đồng ý với các Điều khoản Dịch vụ và Thỏa thuận Bản quyền DRM",
+      "submit_btn": "Đăng Ký Tài Khoản",
+      "login_link": "Đã có tài khoản? Đăng nhập"
+    }
+  },
+  "explore": {
+    "hero_title": "Nền tảng GitHub + Spotify dành cho Nhà sáng tạo Âm nhạc",
+    "search_placeholder": "Phối bài 'Summer Breeze' theo phong cách dark phonk...",
+    "remix_btn": "Remix",
+    "trending_section": "Bài hát gốc đang thịnh hành",
+    "trending_subtitle": "Cho phép AI remix & mua bản quyền thương mại",
+    "badges": {
+      "bpm": "BPM",
+      "key": "Tông/Khóa",
+      "stems": "Stems"
+    }
+  },
+  "song_details": {
+    "cta_remix": "Mở trong AI Remix Studio",
+    "stems_control": "Bảng điều khiển Stems",
+    "stems_subtitle": "Các track âm thanh được tách bằng AI Demucs",
+    "vocals": "Giọng ca (Vocals)",
+    "drums": "Trống (Drums)",
+    "bass": "Âm trầm (Bass)",
+    "melody": "Giai điệu (Melody)",
+    "mute": "Tắt tiếng (Mute)",
+    "solo": "Nghe riêng (Solo)",
+    "licensing_options": "Tùy chọn Cấp quyền & Mua bản quyền",
+    "license_personal": "Bản quyền Cá nhân",
+    "license_commercial": "Bản quyền Thương mại",
+    "license_remix": "Bản quyền Remix",
+    "license_exclusive": "Bản quyền Độc quyền"
+  },
+  "studio": {
+    "prompt_title": "1. Nhập mô tả Prompt bằng văn bản",
+    "prompt_placeholder": "Làm trống nhanh hơn, thêm âm trầm méo tiếng (distortion), chèn thêm hợp âm synth arp...",
+    "presets_title": "2. Chọn phong cách gợi ý (Preset)",
+    "presets": {
+      "lofi": "Lofi",
+      "phonk": "Phonk",
+      "synthwave": "Synthwave",
+      "techno": "Techno",
+      "ambient": "Ambient",
+      "anime": "Anime"
+    },
+    "generate_btn": "TẠO REMIX BẰNG AI",
+    "logs_title": "Nhật ký tiến trình thực thi của AI",
+    "royalty_title": "Tỷ lệ phân chia Doanh thu (Royalty)",
+    "royalty_desc": "Cấu hình phân chia bản quyền bất biến:",
+    "royalty_creator": "Nhạc sĩ gốc",
+    "royalty_remixer": "Người Remix (Bạn)",
+    "royalty_platform": "Phí nền tảng",
+    "royalty_disclaimer": "Tất cả các bản remix phái sinh đều bị ràng buộc theo tỷ lệ doanh thu của tác giả gốc. Tác phẩm phái sinh không được thương mại hóa nếu chưa mua bản quyền."
+  },
+  "wallet": {
+    "total_balance": "Số dư khả dụng",
+    "total_streams": "Tổng lượt nghe",
+    "active_remixes": "Bản phối hoạt động",
+    "withdraw_btn": "Yêu cầu rút tiền",
+    "splits_activity": "Hoạt động phân chia Royalty",
+    "date": "Ngày giao dịch",
+    "source_track": "Bài hát gốc",
+    "remix_track": "Bản phối phái sinh",
+    "event_type": "Loại giao dịch",
+    "gross": "Tổng doanh thu",
+    "net": "Thực nhận",
+    "graph_title": "Sơ đồ Phả hệ & Dòng chảy bản quyền"
+  },
+  "upload": {
+    "title": "Tải lên Bài hát & Stems",
+    "drag_drop_full": "Kéo thả file nhạc đầy đủ (.wav, .mp3, tối đa 50MB)",
+    "stems_upload": "Tải lên các Stems riêng lẻ (Không bắt buộc)",
+    "metadata_title": "Thiết lập Metadata & Bản quyền",
+    "song_title": "Tên bài hát",
+    "genre": "Thể loại",
+    "bpm": "Nhịp độ (BPM)",
+    "key": "Khóa nhạc/Tông",
+    "mood": "Cảm xúc / Thẻ tags",
+    "allow_remix": "Cho phép phối nhạc bằng AI",
+    "allow_commercial": "Cho phép Cấp quyền Thương mại",
+    "allow_voice": "Cho phép Nhân bản Giọng hát bằng AI",
+    "remixer_split": "Tỷ lệ chia cho người Remix",
+    "publish_btn": "Xuất bản bài hát"
+  },
+  "checkout": {
+    "title": "Thanh toán Bản quyền",
+    "pay_now": "Thanh toán ngay",
+    "method": "Phương thức thanh toán",
+    "stripe": "Thẻ tín dụng / Stripe",
+    "momo": "Ví điện tử MoMo",
+    "vnpay": "Cổng VNPay"
+  },
+  "voices": {
+    "title": "Thư viện Giọng ca AI",
+    "subtitle": "Khám phá và thuê bản quyền giọng ca AI hoặc huấn luyện giọng ca của riêng bạn.",
+    "train_btn": "+ Huấn luyện giọng ca của tôi",
+    "cards": {
+      "use": "Sử dụng trong Studio",
+      "license": "Thuê bản quyền giọng",
+      "preview": "Nghe thử giọng hát"
+    },
+    "panel": {
+      "title": "Huấn luyện Mô hình Giọng hát AI",
+      "step_1": "1. Tải lên 10 phút file thu âm giọng sạch (.wav)",
+      "step_2": "2. Cài đặt mô hình cấp quyền & giá thuê",
+      "drag_vocal": "Kéo & thả các file âm thanh thu âm giọng hát vào đây",
+      "voice_name": "Tên Mô hình Giọng hát"
+    }
+  },
+  "disputes": {
+    "title": "Hòa giải Tranh chấp Bản quyền",
+    "case_id": "Mã vụ việc",
+    "status": {
+      "pending": "Đang điều tra",
+      "resolved": "Đã giải quyết",
+      "takedown": "Đã yêu cầu gỡ bỏ"
+    },
+    "actions": {
+      "reject": "Bác đơn khiếu nại",
+      "takedown": "Yêu cầu gỡ bỏ",
+      "adjust": "Điều chỉnh chia Royalty"
+    },
+    "analyzer": "Phân tích độ tương đồng âm thanh bằng AI",
+    "match": "Độ tương đồng giai điệu phát hiện"
+  },
+  "pricing": {
+    "title": "Lựa chọn Sức mạnh Sáng tạo",
+    "subtitle": "Nâng cấp để mở khóa credits remix bằng AI nâng cao, stems chất lượng cao không nén, và mô hình giọng hát AI riêng tư.",
+    "monthly": "Thanh toán theo tháng",
+    "yearly": "Thanh toán theo năm (Tiết kiệm 20%)",
+    "free_trial": "Bắt đầu 7 ngày dùng thử miễn phí",
+    "contact_sales": "Liên hệ bộ phận bán hàng"
+  }
+}
