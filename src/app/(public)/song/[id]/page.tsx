@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, use, useRef } from "react";
 import Link from "next/link";
 import { io } from "socket.io-client";
 import { useSession } from "next-auth/react";
+import { buildPlaybackUrl, normalizeStems } from "@/lib/music-media";
 
 interface Comment {
   id: string;
@@ -98,6 +99,32 @@ interface SongStatusUpdatePayload {
   }>;
   analysis?: SongDetails["analysis"];
   error?: string;
+}
+
+interface StemState {
+  id: string;
+  type: string;
+  fileUrl: string;
+  active: boolean;
+}
+
+interface StemMixerNode {
+  buffer: AudioBuffer;
+  gain: GainNode;
+  source: AudioBufferSourceNode | null;
+}
+
+function toStemStates(
+  stems: Array<{ id: string; type: string; fileUrl: string }>,
+): StemState[] {
+  return normalizeStems(
+    stems.map((stem) => ({
+      id: stem.id,
+      type: stem.type,
+      fileUrl: stem.fileUrl,
+      active: true,
+    })),
+  );
 }
 
 function buildAndLayoutTree(
@@ -223,9 +250,7 @@ export default function SongDetailsPage({
   const [song, setSong] = useState<SongDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [stemStates, setStemStates] = useState<
-    Array<{ type: string; active: boolean }>
-  >([]);
+  const [stemStates, setStemStates] = useState<StemState[]>([]);
   const [activeTab, setActiveTab] = useState<"stems" | "ownership">("stems");
   const [graphData, setGraphData] = useState<OwnershipGraphData | null>(null);
   const [graphLoading, setGraphLoading] = useState(false);
@@ -235,6 +260,119 @@ export default function SongDetailsPage({
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentInput, setCommentInput] = useState("");
   const [commentsLoading, setCommentsLoading] = useState(false);
+
+  const [isMixerLoading, setIsMixerLoading] = useState(false);
+  const [isMixerReady, setIsMixerReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackPosition, setPlaybackPosition] = useState(0);
+  const [mixerDuration, setMixerDuration] = useState(0);
+  const [mixerError, setMixerError] = useState("");
+
+  const stemLoadKey = stemStates
+    .map((stem) => `${stem.id}:${stem.fileUrl}`)
+    .join("|");
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const mixerNodesRef = useRef<Map<string, StemMixerNode>>(new Map());
+  const playbackStartTimeRef = useRef(0);
+  const playbackOffsetRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const isPlayingRef = useRef(false);
+  const mixerDurationRef = useRef(0);
+  const songDurationRef = useRef(0);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  useEffect(() => {
+    mixerDurationRef.current = mixerDuration;
+  }, [mixerDuration]);
+
+  useEffect(() => {
+    songDurationRef.current = song?.duration || 0;
+  }, [song?.duration]);
+
+  const getOrCreateAudioContext = React.useCallback(() => {
+    const existing = audioContextRef.current;
+    if (existing && existing.state !== "closed") {
+      return existing;
+    }
+
+    const ctx = new window.AudioContext();
+    audioContextRef.current = ctx;
+    return ctx;
+  }, []);
+
+  const stopStemSources = React.useCallback((resetOffset: boolean) => {
+    const ctx = audioContextRef.current;
+    if (!ctx) return;
+
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    const elapsed = ctx.currentTime - playbackStartTimeRef.current;
+    if (isPlayingRef.current) {
+      playbackOffsetRef.current = Math.min(
+        playbackOffsetRef.current + Math.max(0, elapsed),
+        mixerDurationRef.current > 0
+          ? mixerDurationRef.current
+          : songDurationRef.current || Number.MAX_SAFE_INTEGER,
+      );
+    }
+
+    mixerNodesRef.current.forEach((node) => {
+      if (node.source) {
+        try {
+          node.source.stop();
+        } catch {
+          // Source may already be stopped; ignore.
+        }
+        node.source.disconnect();
+        node.source = null;
+      }
+    });
+
+    if (resetOffset) {
+      playbackOffsetRef.current = 0;
+      setPlaybackPosition(0);
+    }
+
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+  }, []);
+
+  const startStemSources = React.useCallback(
+    async (startAt: number) => {
+      const ctx = getOrCreateAudioContext();
+      if (ctx.state === "closed" || mixerNodesRef.current.size === 0) {
+        return;
+      }
+
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+
+      stopStemSources(false);
+
+      mixerNodesRef.current.forEach((node) => {
+        const source = ctx.createBufferSource();
+        source.buffer = node.buffer;
+        source.connect(node.gain);
+        node.source = source;
+        source.start(0, Math.max(0, startAt));
+      });
+
+      playbackOffsetRef.current = Math.max(0, startAt);
+      playbackStartTimeRef.current = ctx.currentTime;
+      setPlaybackPosition(Math.max(0, startAt));
+      isPlayingRef.current = true;
+      setIsPlaying(true);
+    },
+    [getOrCreateAudioContext, stopStemSources],
+  );
 
   const handleLikeToggle = async () => {
     if (!session || !token) {
@@ -316,9 +454,7 @@ export default function SongDetailsPage({
 
         // Initialize stem active states
         if (data.stems) {
-          setStemStates(
-            data.stems.map((s) => ({ type: s.type, active: true })),
-          );
+          setStemStates(toStemStates(data.stems));
         }
         setLoading(false);
       } catch (err) {
@@ -391,17 +527,15 @@ export default function SongDetailsPage({
               ? {
                   ...prev,
                   processingStatus: "done",
-                  bpm: data.song.bpm,
-                  key: data.song.key,
-                  duration: data.song.duration,
-                  stems: data.stems,
-                  analysis: data.analysis,
+                  bpm: data.song?.bpm ?? prev.bpm,
+                  key: data.song?.key ?? prev.key,
+                  duration: data.song?.duration ?? prev.duration,
+                  stems: data.stems ?? prev.stems,
+                  analysis: data.analysis ?? prev.analysis,
                 }
               : null,
           );
-          setStemStates(
-            (data.stems || []).map((s) => ({ type: s.type, active: true })),
-          );
+          setStemStates(toStemStates(data.stems || []));
         } else if (data.status === "failed") {
           setSong((prev) =>
             prev ? { ...prev, processingStatus: "failed" } : null,
@@ -421,9 +555,171 @@ export default function SongDetailsPage({
   }, [processingStatus, songId]);
 
   const toggleStem = (index: number) => {
-    const updated = [...stemStates];
-    updated[index].active = !updated[index].active;
-    setStemStates(updated);
+    setStemStates((prev) =>
+      prev.map((stem, currentIndex) =>
+        currentIndex === index ? { ...stem, active: !stem.active } : stem,
+      ),
+    );
+  };
+
+  useEffect(() => {
+    if (song?.processingStatus !== "done" || stemStates.length === 0) {
+      setIsMixerReady(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const initMixer = async () => {
+      setIsMixerLoading(true);
+      setMixerError("");
+      setIsMixerReady(false);
+      setPlaybackPosition(0);
+      setMixerDuration(0);
+      playbackOffsetRef.current = 0;
+
+      stopStemSources(true);
+
+      const ctx = getOrCreateAudioContext();
+      const nodes = new Map<string, StemMixerNode>();
+
+      try {
+        let maxDuration = 0;
+        for (const stem of stemStates) {
+          const stemUrl = buildPlaybackUrl(songId, stem.id);
+          const response = await fetch(stemUrl);
+          if (!response.ok) {
+            throw new Error(
+              `Unable to load stem ${stem.type} (${response.status})`,
+            );
+          }
+
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+          maxDuration = Math.max(maxDuration, audioBuffer.duration);
+
+          const gain = ctx.createGain();
+          gain.gain.value = stem.active ? 1 : 0;
+          gain.connect(ctx.destination);
+
+          nodes.set(stem.id, {
+            buffer: audioBuffer,
+            gain,
+            source: null,
+          });
+        }
+
+        if (!cancelled) {
+          if (ctx.state === "closed") {
+            return;
+          }
+          mixerNodesRef.current = nodes;
+          const resolvedDuration = Math.max(
+            maxDuration,
+            songDurationRef.current || 0.1,
+          );
+          setMixerDuration(resolvedDuration);
+          setIsMixerReady(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setMixerError(
+            error instanceof Error
+              ? error.message
+              : "Failed to initialize stem mixer",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsMixerLoading(false);
+        }
+      }
+    };
+
+    initMixer();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [song?.id, song?.processingStatus, stemLoadKey]);
+
+  useEffect(() => {
+    stemStates.forEach((stem) => {
+      const mixerNode = mixerNodesRef.current.get(stem.id);
+      if (mixerNode) {
+        mixerNode.gain.gain.value = stem.active ? 1 : 0;
+      }
+    });
+  }, [stemStates]);
+
+  useEffect(() => {
+    const tick = () => {
+      const ctx = audioContextRef.current;
+      if (!ctx) return;
+
+      const elapsed = ctx.currentTime - playbackStartTimeRef.current;
+      const playbackLimit =
+        mixerDuration > 0 ? mixerDuration : songDurationRef.current;
+      if (playbackLimit <= 0) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const nextPosition = Math.min(
+        playbackOffsetRef.current + Math.max(0, elapsed),
+        playbackLimit,
+      );
+      setPlaybackPosition(nextPosition);
+
+      if (nextPosition >= playbackLimit) {
+        stopStemSources(true);
+        return;
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    if (isPlaying) {
+      rafRef.current = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      rafRef.current = null;
+    };
+  }, [isPlaying, mixerDuration, stopStemSources]);
+
+  useEffect(() => {
+    return () => {
+      stopStemSources(true);
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [stopStemSources]);
+
+  const handlePlayPause = async () => {
+    if (!isMixerReady) return;
+
+    if (isPlaying) {
+      stopStemSources(false);
+      return;
+    }
+
+    await startStemSources(playbackOffsetRef.current);
+  };
+
+  const handleSeek = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextPosition = Number(event.target.value);
+    playbackOffsetRef.current = nextPosition;
+    setPlaybackPosition(nextPosition);
+
+    if (isPlaying) {
+      await startStemSources(nextPosition);
+    }
   };
 
   // Fetch ownership graph data
@@ -562,7 +858,7 @@ export default function SongDetailsPage({
                     <div className="flex flex-col justify-between h-full">
                       <div className="flex items-center justify-between">
                         <span
-                          className="text-xs font-bold text-white truncate max-w-[130px]"
+                          className="text-xs font-bold text-white truncate max-w-32.5"
                           title={node.title}
                         >
                           {node.title}
@@ -578,7 +874,7 @@ export default function SongDetailsPage({
                         </span>
                       </div>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-[10px] text-gray-400 truncate max-w-[120px]">
+                        <span className="text-[10px] text-gray-400 truncate max-w-30">
                           👤 {node.owner}
                         </span>
                         {isCurrent && (
@@ -746,6 +1042,48 @@ export default function SongDetailsPage({
                     </div>
                   )}
                 </div>
+
+                <div className="mt-4 bg-gray-950/60 border border-gray-800 rounded-xl p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <button
+                      onClick={handlePlayPause}
+                      disabled={!isMixerReady || isMixerLoading}
+                      className="bg-[#10B981] hover:bg-[#059669] disabled:opacity-50 disabled:cursor-not-allowed text-black text-xs font-bold px-4 py-2 rounded-lg transition"
+                    >
+                      {isPlaying ? "PAUSE MIX" : "PLAY MIX"}
+                    </button>
+                    <span className="text-xs text-gray-400 font-mono">
+                      {`${Math.floor(playbackPosition / 60)}:${String(
+                        Math.floor(playbackPosition % 60),
+                      ).padStart(
+                        2,
+                        "0",
+                      )} / ${Math.floor((mixerDuration || song.duration || 0) / 60)}:${String(
+                        Math.floor((mixerDuration || song.duration || 0) % 60),
+                      ).padStart(2, "0")}`}
+                    </span>
+                  </div>
+
+                  <input
+                    type="range"
+                    min={0}
+                    max={Math.max(mixerDuration, 0.1)}
+                    step={0.01}
+                    value={playbackPosition}
+                    onChange={handleSeek}
+                    disabled={!isMixerReady || isMixerLoading}
+                    className="w-full accent-[#8B5CF6]"
+                  />
+
+                  {isMixerLoading && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Loading stem buffers for mixer...
+                    </p>
+                  )}
+                  {mixerError && (
+                    <p className="mt-2 text-xs text-rose-400">{mixerError}</p>
+                  )}
+                </div>
               </div>
 
               {/* Stems Separation Section */}
@@ -757,7 +1095,7 @@ export default function SongDetailsPage({
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {stemStates.map((stem, index) => (
                       <div
-                        key={stem.type}
+                        key={stem.id}
                         className={`border p-4 rounded-xl flex flex-col justify-between h-28 transition ${
                           stem.active
                             ? "bg-gray-900 border-[#8B5CF6]"
@@ -770,7 +1108,7 @@ export default function SongDetailsPage({
 
                         {/* Display R2 stem audio preview links */}
                         <span className="text-[10px] text-gray-500 truncate font-mono mt-1">
-                          {song.stems[index]?.fileUrl.split("/").pop()}
+                          {stem.fileUrl.split("/").pop()}
                         </span>
 
                         <button
